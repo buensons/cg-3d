@@ -49,10 +49,14 @@ public class Matrix {
     public Matrix scalar(float n) {
         Matrix result = new Matrix();
 
-        for(Vector v : columns) {
-            v.scalar(n);
+        for(int i = 0; i < 4; i++) {
+            columns[i] = columns[i].scalar(n);
         }
         return result;
+    }
+
+    public Vector[] getColumns() {
+        return columns;
     }
 
     @Override

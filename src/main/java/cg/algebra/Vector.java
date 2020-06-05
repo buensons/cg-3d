@@ -4,17 +4,17 @@ import java.util.Arrays;
 
 public class Vector {
 
-    private float [] values;
+    private double [] values;
 
     public Vector() {
-        values = new float [] {0,0,0,0};
+        values = new double [] {0,0,0,0};
     }
 
-    public Vector(float x, float y, float z, float t) {
-        values = new float [] {x, y, z, t};
+    public Vector(double x, double y, double z, double t) {
+        values = new double [] {x, y, z, t};
     }
 
-    public float dot(Vector v) {
+    public double dot(Vector v) {
         float result = 0;
 
         for(int i = 0; i < 4; i++) {
@@ -24,14 +24,14 @@ public class Vector {
     }
 
     public Vector cross(Vector v) {
-        float a = values[1] * v.values[2] - values[2] * v.values[1];
-        float b = values[0] * v.values[2] - values[2] * v.values[0];
-        float c = values[0] * v.values[1] - values[2] * v.values[0];
+        double a = values[1] * v.values[2] - values[2] * v.values[1];
+        double b = values[0] * v.values[2] - values[2] * v.values[0];
+        double c = values[0] * v.values[1] - values[2] * v.values[0];
 
         return new Vector(a,-1 * b,c,1);
     }
 
-    public Vector scalar(float n) {
+    public Vector scalar(double n) {
         var result = new Vector();
 
         for(int i = 0; i < 4; i++) {
@@ -40,11 +40,11 @@ public class Vector {
         return result;
     }
 
-    public float[] getValues() {
+    public double[] getValues() {
         return values;
     }
 
-    public void setValues(float[] values) {
+    public void setValues(double[] values) {
         this.values = values;
     }
 

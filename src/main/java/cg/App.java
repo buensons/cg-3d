@@ -39,7 +39,7 @@ public class App extends Application {
 
         var matrix = new Matrix(new Vector[] {v1, v2, v3, v4});
 
-        System.out.println(matrix.multiply(matrix));
+//        System.out.println(matrix.multiply(matrix));
 
         stage.setScene(scene);
         stage.show();
