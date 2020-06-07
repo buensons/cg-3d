@@ -14,7 +14,7 @@ public class Vector {
         values = new double [] {x, y, z, t};
     }
 
-    public double dot(Vector v) {
+    public double dotProduct(Vector v) {
         float result = 0;
 
         for(int i = 0; i < 4; i++) {
@@ -23,15 +23,15 @@ public class Vector {
         return result;
     }
 
-    public Vector cross(Vector v) {
-        double a = values[1] * v.values[2] - values[2] * v.values[1];
-        double b = values[0] * v.values[2] - values[2] * v.values[0];
-        double c = values[0] * v.values[1] - values[2] * v.values[0];
+    public Vector crossProduct(Vector v) {
+        double x = values[1] * v.values[2] - values[2] * v.values[1];
+        double y = values[0] * v.values[2] - values[2] * v.values[0];
+        double z = values[0] * v.values[1] - values[2] * v.values[0];
 
-        return new Vector(a,-1 * b,c,1);
+        return new Vector(x, y, z,1);
     }
 
-    public Vector scalar(double n) {
+    public Vector scalarProduct(double n) {
         var result = new Vector();
 
         for(int i = 0; i < 4; i++) {

@@ -24,7 +24,7 @@ public class Matrix {
                             columns[2].getValues()[i],
                              columns[3].getValues()[i] );
 
-            result.getValues()[i] = temp.dot(vector);
+            result.getValues()[i] = temp.dotProduct(vector);
         }
 
         return result;
@@ -40,7 +40,7 @@ public class Matrix {
                     columns[3].getValues()[i] );
 
             for(int j = 0; j < 4; j++) {
-                result.columns[j].getValues()[i] = temp.dot(m.columns[j]);
+                result.columns[j].getValues()[i] = temp.dotProduct(m.columns[j]);
             }
         }
         return result;
@@ -50,7 +50,7 @@ public class Matrix {
         Matrix result = new Matrix();
 
         for(int i = 0; i < 4; i++) {
-            columns[i] = columns[i].scalar(n);
+            columns[i] = columns[i].scalarProduct(n);
         }
         return result;
     }

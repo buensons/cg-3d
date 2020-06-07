@@ -27,19 +27,12 @@ public class App extends Application {
         root.setBackground(new Background(new BackgroundFill(Paint.valueOf("black"), null, null)));
         var scene = new Scene(root, 1280, 768);
 
-//        var v1 = new Vector(1, 2, 3, 4);
-//        var v2 = new Vector(1, 2, 3, 4);
-//        var v3 = new Vector(1, 2, 3, 4);
-//        var v4 = new Vector(1, 2, 3, 4);
-
         var v1 = new Vector(1, 0, 0, 0);
         var v2 = new Vector(0, 1, 0, 0);
         var v3 = new Vector(0, 0, 1, 0);
         var v4 = new Vector(0, 0, 0, 1);
 
         var matrix = new Matrix(new Vector[] {v1, v2, v3, v4});
-
-//        System.out.println(matrix.multiply(matrix));
 
         stage.setScene(scene);
         stage.show();

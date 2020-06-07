@@ -4,4 +4,6 @@ module cg3d {
     requires javafx.fxml;
     requires javafx.swing;
     exports cg;
+    exports cg.algebra;
+    exports cg.graphics2d;
 }
