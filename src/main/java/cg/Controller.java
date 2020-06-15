@@ -18,22 +18,22 @@ import java.util.Arrays;
 
 public class Controller {
 
+    private final int m = 15;
+    private final int n = 15;
+
     @FXML public Canvas canvas;
     @FXML public Slider slider;
 
     private static PixelWriter pixelWriter;
-    private GraphicsContext gc;
     private double mousePosX, mousePosY;
     private Vector [] shape;
     private Vector [] projectedShape;
     private Matrix translate;
     private Polygon[] mesh;
-    private final int m = 15;
-    private final int n = 15;
 
     @FXML
     public void initialize() {
-        gc = canvas.getGraphicsContext2D();
+        var gc = canvas.getGraphicsContext2D();
         pixelWriter = gc.getPixelWriter();
 
         shape = generateSphere();
@@ -42,7 +42,6 @@ public class Controller {
 
         var t = new Vector(0, 0, slider.getValue(), 1);
         translate = AlgebraUtils.getTranslationMatrix(t);
-        gc.setStroke(Color.WHITE);
         displayShape(0, 0);
 
         slider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -130,14 +129,13 @@ public class Controller {
 
         for(int i = 0; i < m - 1; i++) {
             mesh[i] = new Polygon(new Vector[] {shape[0], shape[i+2], shape[i+1]});
-            mesh[2*(n-1)*m + i] = new Polygon(new Vector[] {shape[m*n + 1], shape[(n-1)*m + i + 1], shape[(n-1)*m + i + 2]});
+            mesh[(2*n-1)*m + i] = new Polygon(new Vector[] {shape[m*n + 1], shape[(n-1)*m + i + 1], shape[(n-1)*m + i + 2]});
         }
         mesh[m - 1] = new Polygon(new Vector[] {shape[0], shape[1], shape[m]});
-        mesh[2*(n-1)*m + m-1] = new Polygon(new Vector[] {shape[m*n + 1], shape[m*n], shape[(n-1)*m + 1]});
+        mesh[(2*n-1)*m + m-1] = new Polygon(new Vector[] {shape[m*n + 1], shape[m*n], shape[(n-1)*m + 1]});
 
-        // TODO something is wrong (Bottom lid disappears, and there is one distinct stripe)
         for(int i = 0; i < n - 1; i++) {
-            for(int j = 0; j < m; j++) {
+            for(int j = 1; j < m; j++) {
                 mesh[(2*i + 1)*m + j-1] = new Polygon(new Vector[] {shape[i*m + j], shape[i*m + j + 1], shape[(i+1)*m + j + 1]});
                 mesh[(2*i + 2)*m + j-1] = new Polygon(new Vector[] {shape[i*m + j], shape[(i+1)*m + j + 1], shape[(i+1)*m + j]});
             }

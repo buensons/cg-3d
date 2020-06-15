@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -9,6 +11,8 @@
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
             <Canvas fx:id="canvas" height="743.0" layoutX="-7.0" layoutY="-8.0" width="1293.0" />
+            <Slider fx:id="slider" blockIncrement="1.0" layoutX="1219.0" layoutY="188.0" max="20.0" min="2.0" orientation="VERTICAL" prefHeight="270.0" prefWidth="14.0" value="5.0" AnchorPane.bottomAnchor="277.0" AnchorPane.rightAnchor="53.0" AnchorPane.topAnchor="188.0" />
+            <Label layoutX="1181.0" layoutY="142.0" text="Camera Distance" textFill="WHITE" AnchorPane.bottomAnchor="576.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="142.0" />
          </children>
     </AnchorPane>
   </children>
