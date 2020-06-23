@@ -6,4 +6,5 @@ module cg3d {
     exports cg;
     exports cg.algebra;
     exports cg.graphics2d;
+    exports cg.models3d;
 }

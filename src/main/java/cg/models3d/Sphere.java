@@ -1,11 +1,13 @@
-package cg.graphics2d;
+package cg.models3d;
 
 import cg.algebra.Vector;
+import cg.graphics2d.Point;
+import cg.graphics2d.Polygon;
 import javafx.scene.image.Image;
 
 public class Sphere {
     private Vector[] vertices;
-    private Polygon [] mesh;
+    private Polygon[] mesh;
     private Point[] textureCoordinates;
     private Image texture;
     private final int m, n, r;
