@@ -1,5 +1,6 @@
 package cg;
 
+import cg.algebra.AlgebraUtils;
 import cg.algebra.Matrix;
 import cg.algebra.Vector;
 import javafx.application.Application;
@@ -26,13 +27,6 @@ public class App extends Application {
         VBox root = loader.load();
         root.setBackground(new Background(new BackgroundFill(Paint.valueOf("black"), null, null)));
         var scene = new Scene(root, 1280, 768);
-
-        var v1 = new Vector(1, 0, 0, 0);
-        var v2 = new Vector(0, 1, 0, 0);
-        var v3 = new Vector(0, 0, 1, 0);
-        var v4 = new Vector(0, 0, 0, 1);
-
-        var matrix = new Matrix(new Vector[] {v1, v2, v3, v4});
 
         stage.setScene(scene);
         stage.show();

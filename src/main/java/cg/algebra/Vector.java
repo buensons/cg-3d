@@ -1,7 +1,5 @@
 package cg.algebra;
 
-import java.util.Arrays;
-
 public class Vector {
 
     private double [] values;
