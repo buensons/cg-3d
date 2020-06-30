@@ -3,6 +3,7 @@ package cg.graphics2d;
 import cg.algebra.Vector;
 import cg.graphics2d.filling.EdgeEntry;
 import cg.graphics2d.filling.EdgeTable;
+import cg.models3d.Vertex;
 import javafx.scene.Cursor;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -22,6 +23,7 @@ public class Polygon extends AbstractShape {
     private Color filling;
     private Image pattern;
     private boolean hasPatternFilling;
+    private Vertex[] vertices;
 
     // for serialization purposes
     private String fillingString;
@@ -36,11 +38,12 @@ public class Polygon extends AbstractShape {
         hasPatternFilling = false;
     }
 
-    public Polygon(Vector[] vertices) {
+    public Polygon(Vertex[] vertices) {
         this();
+        this.vertices = vertices;
         for(int i = 0; i < vertices.length; i++) {
-            Vector v1 = vertices[i];
-            Vector v2;
+            Vertex v1 = vertices[i];
+            Vertex v2;
             if(i == vertices.length -1) {
                 v2 = vertices[0];
             } else {
@@ -71,10 +74,11 @@ public class Polygon extends AbstractShape {
 
     @Override
     public void draw() {
+
         if(!filling.equals(new Color(0,0,0,0)) || hasPatternFilling) {
             fill();
         }
-        lines.forEach(Line::draw);
+//        lines.forEach(Line::draw);
     }
 
     @Override
@@ -108,16 +112,34 @@ public class Polygon extends AbstractShape {
         lines.forEach(line -> {
             if(line.getY1() == line.getY2()) return;
 
+            var edge = new EdgeEntry();
             int yMax = Math.max(line.getY1(), line.getY2());
             int yMin = Math.min(line.getY1(), line.getY2());
             int xMin = line.getX1();
-            float slope =  (float)(line.getX2() - line.getX1()) / (float) (line.getY2() - line.getY1());
+            float slope = (float)(line.getX2() - line.getX1()) / (float) (line.getY2() - line.getY1());
+
+            edge.setV1(line.getP1());
+            edge.setV2(line.getP2());
+            edge.setTextureX((float)line.getP1().getTextureCoords().getX());
+            edge.setTextureY((float)line.getP1().getTextureCoords().getY());
+            edge.setxMax(line.getX2());
 
             if(line.getY1() > line.getY2()) {
                 xMin = line.getX2();
+                edge.setxMax(line.getX1());
+                edge.setTextureY((float)line.getP2().getTextureCoords().getY());
+                edge.setTextureX((float)line.getP2().getTextureCoords().getX());
+                edge.setV1(line.getP2());
+                edge.setV2(line.getP1());
             }
-
-            table.add(yMin, new EdgeEntry(yMax, xMin, slope));
+            edge.setxMin(xMin);
+            edge.setyMax(yMax);
+            edge.setyMin(yMin);
+            edge.setInverseSlope(slope);
+            edge.setLength(
+                    (float)Math.sqrt(Math.pow(line.getX2() - line.getX1(), 2)
+                    + Math.pow(line.getY2() - line.getY1(), 2)));
+            table.add(yMin, edge);
 
             if(yMin < minY) minY = yMin;
         });
@@ -146,32 +168,74 @@ public class Polygon extends AbstractShape {
             });
 
             for(int i = 0; i < activeEdgeTable.size() - 1; i++) {
+//                System.out.println(activeEdgeTable.get(i).getTextureX() + " " + activeEdgeTable.get(i+1).getTextureX());
                 if(parity++ % 2 == 0) {
                     fillTheLine(
-                            Math.round(activeEdgeTable.get(i).getxMin()),
-                            Math.round(activeEdgeTable.get(i+1).getxMin()),
+                            activeEdgeTable.get(i),
+                            activeEdgeTable.get(i+1),
                             y);
                 }
             }
             ++y;
 
             int finalY = y;
+
             activeEdgeTable.removeIf(e -> e.getyMax() == finalY);
-            activeEdgeTable.forEach(edge -> edge.setxMin(edge.getxMin() + edge.getInverseSlope()));
+            activeEdgeTable.forEach(edge -> {
+                edge.setxMin(edge.getxMin() + edge.getInverseSlope());
+                float remainingLength = (float)Math.sqrt(
+                        Math.pow(edge.getxMax() - edge.getxMin(), 2)
+                                + Math.pow(edge.getyMax() - finalY, 2));
+
+                float t = (edge.getLength() - remainingLength) / (edge.getLength());
+                float z_1 = (float)edge.getV1().getProjectedValues()[2];
+                float z_2 = (float)edge.getV2().getProjectedValues()[2];
+                float z_t = (z_2 - z_1) * t + z_1;
+                float u;
+                if(z_1 == z_2) u = t;
+                else u = ( (1/z_t) - (1/z_1) ) / ( (1/z_2) - (1/z_1) );
+
+                edge.setTextureX((float)(u * (edge.getV2().getTextureCoords().getX()
+                        - edge.getV1().getTextureCoords().getX()) + edge.getV1().getTextureCoords().getX()));
+                edge.setTextureY((float)(u * (edge.getV2().getTextureCoords().getY()
+                        - edge.getV1().getTextureCoords().getY()) + edge.getV1().getTextureCoords().getY()));
+            });
         }
     }
 
-    private void fillTheLine(int start, int end, int height) {
+    private void fillTheLine(EdgeEntry e1, EdgeEntry e2, int height) {
+        int start = (int)Math.floor(e1.getxMin());
+        int end = (int)Math.ceil(e2.getxMin());
+
         if(hasPatternFilling) {
             var reader = pattern.getPixelReader();
             int w = (int) pattern.getWidth();
             int h = (int) pattern.getHeight();
 
+            float t, z_t, u;
+            var v1 = e1.getV1();
+            var v2 = e1.getV2();
+            float z_1 = (float)v1.getProjectedValues()[2];
+            float z_2 = (float)v2.getProjectedValues()[2];
+
+            Point p1_g = new Point(e1.getTextureX(), e1.getTextureY());
+            Point p2_g = new Point(e2.getTextureX(), e2.getTextureY());
+
             for(int i = start; i < end; i++) {
-                drawPixel(i, height, reader.getColor(i % w, height % h));
+                t = (float)(i - start) / (end - start);
+                z_t = (z_2 - z_1) * t + z_1;
+                if(z_1 == z_2) u = t;
+                else u = ( (1/z_t) - (1/z_1) ) / ( (1/z_2) - (1/z_1) );
+
+                var point = new Point(
+                        u * (p2_g.getX() - p1_g.getX()) + p1_g.getX(),
+                        u * (p2_g.getY() - p1_g.getY()) + p1_g.getY()
+                );
+
+                drawPixel(i, height, reader.getColor((int)point.getX() % w, (int)point.getY() % h));
             }
         } else {
-            for(int i = start; i < end; i++) {
+            for(int i = start; i <= end; i++) {
                 drawPixel(i, height, filling);
             }
         }
@@ -343,5 +407,13 @@ public class Polygon extends AbstractShape {
     public void setImageName(String imageName) {
         this.imageName = imageName;
         if(imageName != null) pattern = new Image(imageName);
+    }
+
+    public Vertex[] getVertices() {
+        return vertices;
+    }
+
+    public void setVertices(Vertex[] vertices) {
+        this.vertices = vertices;
     }
 }

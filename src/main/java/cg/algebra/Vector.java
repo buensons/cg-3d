@@ -1,5 +1,7 @@
 package cg.algebra;
 
+import cg.graphics2d.Point;
+
 public class Vector {
 
     private double [] values;
@@ -24,9 +26,9 @@ public class Vector {
     public Vector crossProduct(Vector v) {
         double x = values[1] * v.values[2] - values[2] * v.values[1];
         double y = values[0] * v.values[2] - values[2] * v.values[0];
-        double z = values[0] * v.values[1] - values[2] * v.values[0];
+        double z = values[0] * v.values[1] - values[1] * v.values[0];
 
-        return new Vector(x, y, z,1);
+        return new Vector(x, y, z,0);
     }
 
     public Vector scalarProduct(double n) {
@@ -50,4 +52,7 @@ public class Vector {
     public String toString() {
         return values[0] + " " + values[1] + " " + values[2] + " " + values[3];
     }
+
 }
+
+

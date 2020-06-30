@@ -1,6 +1,7 @@
 package cg.graphics2d;
 
 import cg.algebra.Vector;
+import cg.models3d.Vertex;
 import javafx.scene.Cursor;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -12,6 +13,7 @@ import java.util.List;
 public class Line extends AbstractShape {
 
     private int x1, x2, y1, y2;
+    private Vertex p1, p2;
     private int thickness;
 
     public Line() {}
@@ -24,12 +26,15 @@ public class Line extends AbstractShape {
         thickness = 1;
     }
 
-    public Line(Vector v1, Vector v2) {
-        x1 = (int)v1.getValues()[0];
-        x2 = (int)v2.getValues()[0];
-        y1 = (int)v1.getValues()[1];
-        y2 = (int)v2.getValues()[1];
+    public Line(Vertex v1, Vertex v2) {
+        x1 = (int)v1.getProjectedPosition().getValues()[0];
+        x2 = (int)v2.getProjectedPosition().getValues()[0];
+        y1 = (int)v1.getProjectedPosition().getValues()[1];
+        y2 = (int)v2.getProjectedPosition().getValues()[1];
         thickness = 1;
+
+        p1 = v1;
+        p2 = v2;
     }
 
     @Override
@@ -53,19 +58,19 @@ public class Line extends AbstractShape {
 
     private void drawPixels(Color c) {
         int xRev = 1, yRev = 1;
-        int xf = x1;
-        int xb = x2;
-        int yf = y1;
-        int yb = y2;
+        int xf = (int)p1.getProjectedPosition().getValues()[0];
+        int xb = (int)p2.getProjectedPosition().getValues()[0];
+        int yf = (int)p1.getProjectedPosition().getValues()[1];
+        int yb = (int)p2.getProjectedPosition().getValues()[1];
 
-        int dx = Math.abs(x2 - x1);
-        int dy = Math.abs(y2 - y1);
+        int dx = Math.abs(xb - xf);
+        int dy = Math.abs(yb - yf);
 
-        if(x1 > x2) {
+        if(xf > xb) {
             xRev = -1;
         }
 
-        if(y1 > y2) {
+        if(yf > yb) {
             yRev = -1;
         }
 
@@ -136,7 +141,7 @@ public class Line extends AbstractShape {
     }
 
     public int getX1() {
-        return x1;
+        return (int)p1.getProjectedPosition().getValues()[0];
     }
 
     public void setX1(int x1) {
@@ -144,7 +149,7 @@ public class Line extends AbstractShape {
     }
 
     public int getX2() {
-        return x2;
+        return (int)p2.getProjectedPosition().getValues()[0];
     }
 
     public void setX2(int x2) {
@@ -152,7 +157,7 @@ public class Line extends AbstractShape {
     }
 
     public int getY1() {
-        return y1;
+        return (int)p1.getProjectedPosition().getValues()[1];
     }
 
     public void setY1(int y1) {
@@ -160,7 +165,7 @@ public class Line extends AbstractShape {
     }
 
     public int getY2() {
-        return y2;
+        return (int)p2.getProjectedPosition().getValues()[1];
     }
 
     public void setY2(int y2) {
@@ -173,5 +178,21 @@ public class Line extends AbstractShape {
 
     public void setThickness(int thickness) {
         this.thickness = thickness;
+    }
+
+    public Vertex getP1() {
+        return p1;
+    }
+
+    public void setP1(Vertex p1) {
+        this.p1 = p1;
+    }
+
+    public Vertex getP2() {
+        return p2;
+    }
+
+    public void setP2(Vertex p2) {
+        this.p2 = p2;
     }
 }
