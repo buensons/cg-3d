@@ -10,22 +10,25 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.util.Arrays;
 
 public class Controller {
 
-    private final int m = 15;
-    private final int n = 15;
+    private final int m = 30;
+    private final int n = 30;
     private final int r = 1;
 
     @FXML public Canvas canvas;
+    @FXML public Button textureButton;
     @FXML public Slider slider;
 
     private static PixelWriter pixelWriter;
@@ -69,6 +72,17 @@ public class Controller {
             }
             mousePosX = me.getSceneX();
             mousePosY = me.getSceneY();
+        });
+
+        textureButton.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("image", Arrays.asList("*.jpeg", "*.jpg", "*.png"));
+            fileChooser.getExtensionFilters().add(filter);
+            File file = fileChooser.showOpenDialog(App.getMainStage());
+
+            if(file != null) {
+                sphere.setTexture(new Image(file.toURI().toString()));
+            }
         });
     }
 

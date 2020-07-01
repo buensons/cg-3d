@@ -25,16 +25,11 @@ public class Polygon extends AbstractShape {
     private boolean hasPatternFilling;
     private Vertex[] vertices;
 
-    // for serialization purposes
-    private String fillingString;
-    private String imageName;
-
     public Polygon() {
         lines = new ArrayList<>();
         thickness = 1;
         minY = Integer.MAX_VALUE;
         filling = new Color(0,0,0,0);
-        fillingString = filling.toString();
         hasPatternFilling = false;
     }
 
@@ -53,32 +48,13 @@ public class Polygon extends AbstractShape {
         }
     }
 
-    public void update(Circle source, Circle destination) {
-        var p1 = lines
-                .stream()
-                .filter(e -> e.getX1() == source.getCenterX() && e.getY1() == source.getCenterY())
-                .findFirst()
-                .get();
-
-        var p2 = lines
-                .stream()
-                .filter(e -> e.getX2() == source.getCenterX() && e.getY2() == source.getCenterY())
-                .findFirst()
-                .get();
-
-        p1.setX1((int) destination.getCenterX());
-        p1.setY1((int) destination.getCenterY());
-        p2.setX2((int) destination.getCenterX());
-        p2.setY2((int) destination.getCenterY());
-    }
-
     @Override
     public void draw() {
-
         if(!filling.equals(new Color(0,0,0,0)) || hasPatternFilling) {
             fill();
+        } else {
+            lines.forEach(Line::draw);
         }
-//        lines.forEach(Line::draw);
     }
 
     @Override
@@ -93,17 +69,6 @@ public class Polygon extends AbstractShape {
             filling = color;
             hasPatternFilling = wasTrue;
         }
-    }
-
-    @Override
-    public List<Circle> generatePoints() {
-        var list = new ArrayList<Circle>();
-        lines.forEach(e -> {
-            var circle = new Circle(e.getX1(), e.getY1(), 10, new Color(0,0,0,0));
-            circle.setCursor(Cursor.CLOSED_HAND);
-            list.add(circle);
-        });
-        return list;
     }
 
     private EdgeTable generateEdgeTable() {
@@ -168,7 +133,6 @@ public class Polygon extends AbstractShape {
             });
 
             for(int i = 0; i < activeEdgeTable.size() - 1; i++) {
-//                System.out.println(activeEdgeTable.get(i).getTextureX() + " " + activeEdgeTable.get(i+1).getTextureX());
                 if(parity++ % 2 == 0) {
                     fillTheLine(
                             activeEdgeTable.get(i),
@@ -221,7 +185,7 @@ public class Polygon extends AbstractShape {
             Point p1_g = new Point(e1.getTextureX(), e1.getTextureY());
             Point p2_g = new Point(e2.getTextureX(), e2.getTextureY());
 
-            for(int i = start; i < end; i++) {
+            for(int i = start; i <= end; i++) {
                 t = (float)(i - start) / (end - start);
                 z_t = (z_2 - z_1) * t + z_1;
                 if(z_1 == z_2) u = t;
@@ -371,7 +335,6 @@ public class Polygon extends AbstractShape {
 
     public void setFilling(Color filling) {
         this.filling = filling;
-        fillingString = filling.toString();
     }
 
     public Image getPattern() {
@@ -380,7 +343,6 @@ public class Polygon extends AbstractShape {
 
     public void setPattern(Image pattern) {
         this.pattern = pattern;
-        imageName = pattern.getUrl();
     }
 
     public boolean isHasPatternFilling() {
@@ -389,24 +351,6 @@ public class Polygon extends AbstractShape {
 
     public void setHasPatternFilling(boolean hasPatternFilling) {
         this.hasPatternFilling = hasPatternFilling;
-    }
-
-    public String getFillingString() {
-        return fillingString;
-    }
-
-    public void setFillingString(String fillingString) {
-        this.fillingString = fillingString;
-        filling = Color.valueOf(fillingString);
-    }
-
-    public String getImageName() {
-        return imageName;
-    }
-
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
-        if(imageName != null) pattern = new Image(imageName);
     }
 
     public Vertex[] getVertices() {

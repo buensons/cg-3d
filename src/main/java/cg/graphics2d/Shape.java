@@ -6,5 +6,4 @@ import java.util.List;
 public interface Shape {
     void draw();
     void clear();
-    List<Circle> generatePoints();
 }

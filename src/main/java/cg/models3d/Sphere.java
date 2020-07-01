@@ -21,12 +21,8 @@ public class Sphere {
         this.m = m;
         this.n = n;
 
-        File file = new File("/Users/damian/Desktop/brick.jpeg");
-        texture = new Image(file.toURI().toString());
-
         generateVertices();
         generateMesh();
-        generateTextureCoords();
     }
 
     private void generateVertices() {
@@ -66,6 +62,11 @@ public class Sphere {
                         (double)(i+1)/(n+1) * (textureHeight-1)));
             }
         }
+
+        for(var t : mesh) {
+            t.setPattern(texture);
+            t.setHasPatternFilling(true);
+        }
     }
 
     public void generateMesh() {
@@ -85,11 +86,6 @@ public class Sphere {
             }
             mesh[(2*i + 1)*m + m-1] = new Polygon(new Vertex[] {vertices[(i+1)*m], vertices[i*m + 1], vertices[(i+1)*m + 1]});
             mesh[(2*i + 2)*m + m-1] = new Polygon(new Vertex[] {vertices[(i+1)*m], vertices[(i+1)*m + 1], vertices[(i+2)*m]});
-        }
-
-        for(var poly : mesh) {
-            poly.setHasPatternFilling(true);
-            poly.setPattern(texture);
         }
     }
 
@@ -153,6 +149,8 @@ public class Sphere {
 
     public void setTexture(Image texture) {
         this.texture = texture;
+        generateTextureCoords();
+        display(0,0);
     }
 
     public Matrix getTranslate() {

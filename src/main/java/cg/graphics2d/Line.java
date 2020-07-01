@@ -27,12 +27,7 @@ public class Line extends AbstractShape {
     }
 
     public Line(Vertex v1, Vertex v2) {
-        x1 = (int)v1.getProjectedPosition().getValues()[0];
-        x2 = (int)v2.getProjectedPosition().getValues()[0];
-        y1 = (int)v1.getProjectedPosition().getValues()[1];
-        y2 = (int)v2.getProjectedPosition().getValues()[1];
         thickness = 1;
-
         p1 = v1;
         p2 = v2;
     }
@@ -45,15 +40,6 @@ public class Line extends AbstractShape {
     @Override
     public void clear() {
         drawPixels(Color.BLACK);
-    }
-
-    @Override
-    public List<Circle> generatePoints() {
-        var c1 = new Circle(x1,y1,10, new Color(0,0,0,0));
-        var c2 = new Circle(x2,y2, 10, new Color(0,0,0,0));
-        c1.setCursor(Cursor.CLOSED_HAND);
-        c2.setCursor(Cursor.CLOSED_HAND);
-        return Arrays.asList(c1, c2);
     }
 
     private void drawPixels(Color c) {
